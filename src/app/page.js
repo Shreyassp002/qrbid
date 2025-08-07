@@ -1,14 +1,29 @@
 import QRBidBackground from "../components/layout/QRBidBackground"
+import Header from "../components/layout/Header"
 import AuctionDisplay from "../components/auction/AuctionDisplay"
 import QRCodeDisplay from "../components/qr/QRCodeDisplay"
+import AdminPanel from "../components/admin/AdminPanel" // ADD THIS
 
 export default function Home() {
+    // Replace with your actual owner address (the address you deployed the contract with)
+    const OWNER_ADDRESS = "0x17A076d6cCaf37Bc9386EAB653A5EfAd8B07430C"
+
     return (
         <QRBidBackground>
+            <Header />
             <div className="p-8">
-                <h1 className="text-3xl font-bold mb-8 text-center text-white">
-                    QRBid Auction Platform
-                </h1>
+                <div className="text-center mb-12">
+                    <h1 className="text-4xl font-bold mb-4 text-white">QRBid Auction Platform</h1>
+                    <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+                        Bid to control where the QR code points. Highest bidder wins for 24 hours!
+                    </p>
+                </div>
+
+                {/* ADD ADMIN PANEL HERE */}
+                <div className="max-w-6xl mx-auto mb-8">
+                    <AdminPanel />
+                </div>
+
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
                     <QRCodeDisplay />
                     <AuctionDisplay />

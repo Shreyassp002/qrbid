@@ -24,11 +24,30 @@ export function useQRBidContract() {
         functionName: "isAuctionActive",
     })
 
-    const { data: currentAuction } = useReadContract({
+    // Fix: s_currentAuction returns an array, not an object
+    const { data: currentAuctionRaw } = useReadContract({
         address: contractAddress,
         abi: QR_BID_ABI,
         functionName: "s_currentAuction",
     })
+
+    const { data: owner } = useReadContract({
+        address: contractAddress,
+        abi: QR_BID_ABI,
+        functionName: "owner", // This comes from OpenZeppelin Ownable
+    })
+
+    // Transform the raw array data into a structured object
+    const currentAuction = currentAuctionRaw
+        ? {
+              startingTime: currentAuctionRaw[0],
+              endingTime: currentAuctionRaw[1],
+              highestBid: currentAuctionRaw[2],
+              highestBidder: currentAuctionRaw[3],
+              preferredUrl: currentAuctionRaw[4],
+              isEnded: currentAuctionRaw[5],
+          }
+        : null
 
     // Write functions
     const { writeContract: placeBid, isPending: isBidding } = useWriteContract()
@@ -40,7 +59,8 @@ export function useQRBidContract() {
         currentUrl,
         timeRemaining,
         isAuctionActive,
-        currentAuction,
+        currentAuction, // Now properly structured
+        owner,
 
         // Write functions
         placeBid: (url, value) =>

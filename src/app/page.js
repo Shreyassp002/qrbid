@@ -12,7 +12,7 @@ export default function Home() {
             <div className="p-8">
                 <div className="text-center mb-12">
                     <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-                        Bid to control where the QR code points. Highest bidder wins for 24 hours!
+                        Bid to control where the QR code points!
                     </p>
                 </div>
 
@@ -25,7 +25,7 @@ export default function Home() {
                     <AuctionDisplay />
                 </div>
             </div>
-            <Footer/>
+            <Footer />
         </QRBidBackground>
     )
 }

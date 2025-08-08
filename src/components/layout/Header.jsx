@@ -17,18 +17,6 @@ export default function Header() {
                         </span>
                     </div>
 
-                    {/* <nav className="hidden md:flex space-x-8">
-                        <a href="#" className="text-gray-300 hover:text-white">
-                            Auctions
-                        </a>
-                        <a href="#" className="text-gray-300 hover:text-white">
-                            How it Works
-                        </a>
-                        <a href="#" className="text-gray-300 hover:text-white">
-                            Stats
-                        </a>
-                    </nav> */}
-
                     <ConnectButton />
                 </div>
             </div>

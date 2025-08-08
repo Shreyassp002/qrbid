@@ -87,27 +87,6 @@ export default function QRCodeDisplay() {
         generateQR()
     }, [displayUrl])
 
-    // Debug
-    useEffect(() => {
-        console.log("QR Component Debug:", {
-            contractCurrentUrl: currentUrl,
-            displayUrl,
-            isAuctionActive,
-            hasActiveUrl,
-            currentUrlExpiryTime: currentUrlExpiryTime?.toString(),
-            urlTimeLeft,
-            isShowingDefault,
-        })
-    }, [
-        currentUrl,
-        displayUrl,
-        isAuctionActive,
-        hasActiveUrl,
-        currentUrlExpiryTime,
-        urlTimeLeft,
-        isShowingDefault,
-    ])
-
     // Format time remaining
     const formatTimeRemaining = (seconds) => {
         const hours = Math.floor(seconds / 3600)

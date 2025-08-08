@@ -64,7 +64,7 @@ export default function AuctionDisplay() {
         }
     }
 
-    // bid amount calculation 
+    // bid amount calculation
     const minimumBid = currentAuction
         ? currentAuction.highestBid && currentAuction.highestBid > 0n
             ? formatEther(currentAuction.highestBid + parseEther("0.001"))
@@ -73,16 +73,11 @@ export default function AuctionDisplay() {
 
     return (
         <div className="auction-card">
-            <div className="mb-6">
-                <h2 className="text-2xl font-bold text-white mb-4">Current Auction</h2>
-
-                {/* Wallet Connection */}
-                <div className="mb-4">
-                    <ConnectButton />
-                </div>
+            <div className="mb-4">
+                <h2 className="text-xl font-bold text-white mb-4">Current Auction</h2>
 
                 {/* Auction Status */}
-                <div className="space-y-3 mb-6">
+                <div className="space-y-3 mb-4">
                     <div className="flex justify-between items-center">
                         <span className="text-gray-300">Status:</span>
                         <span
@@ -124,27 +119,24 @@ export default function AuctionDisplay() {
                                         : "No winner yet"}
                                 </span>
                             </div>
-
-                            <div className="flex justify-between items-start">
-                                <span className="text-gray-300">Current URL:</span>
-                                <div className="text-right max-w-xs">
-                                    {currentUrl ? (
-                                        <a
-                                            href={currentUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-blue-400 hover:text-blue-300 text-sm break-all"
-                                        >
-                                            {currentUrl}
-                                        </a>
-                                    ) : (
-                                        <span className="text-gray-500 text-sm">No URL set</span>
-                                    )}
-                                </div>
-                            </div>
                         </>
                     )}
                 </div>
+
+                {/* Current URL */}
+                {currentUrl && (
+                    <div className="mb-4 p-3 bg-gray-800/50 rounded-lg border border-gray-600">
+                        <p className="text-sm text-gray-300 mb-2">Current URL:</p>
+                        <a
+                            href={currentUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-400 hover:text-blue-300 text-sm break-all"
+                        >
+                            {currentUrl}
+                        </a>
+                    </div>
+                )}
             </div>
 
             {/* Bid Form */}
@@ -190,12 +182,12 @@ export default function AuctionDisplay() {
                     </button>
                 </div>
             ) : !isConnected ? (
-                <div className="text-center py-8">
-                    <p className="text-gray-400 mb-4">Connect your wallet to place bids</p>
+                <div className="text-center py-6">
+                    <p className="text-gray-400 mb-2">Connect your wallet to place bids</p>
                 </div>
             ) : !isAuctionActive ? (
-                <div className="text-center py-8">
-                    <p className="text-gray-400 mb-4">Auction has ended</p>
+                <div className="text-center py-6">
+                    <p className="text-gray-400 mb-2">Auction has ended</p>
                     <p className="text-sm text-gray-500">Waiting for next auction to start...</p>
                 </div>
             ) : null}

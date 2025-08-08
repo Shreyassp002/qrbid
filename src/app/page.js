@@ -10,7 +10,6 @@ export default function Home() {
             <Header />
             <div className="p-8">
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl font-bold mb-4 text-white">QRBid Auction Platform</h1>
                     <p className="text-xl text-gray-300 max-w-2xl mx-auto">
                         Bid to control where the QR code points. Highest bidder wins for 24 hours!
                     </p>

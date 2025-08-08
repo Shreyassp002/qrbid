@@ -1,5 +1,6 @@
 "use client"
 import { useEffect, useRef, useState } from "react"
+import { Download, Share2, ExternalLink } from "lucide-react"
 import QRCodeLib from "qrcode"
 import { useQRBidContract } from "../../hooks/useQRBidContract"
 
@@ -19,7 +20,7 @@ export default function QRCodeDisplay() {
     } = useQRBidContract()
 
     // Default URL when no auction is active or no URL is set
-    const defaultUrl = "https://github.com/Shreyassp002"
+    const defaultUrl = "https://x.com/Darkreyyy"
 
     // Get URL status and display information
     const urlStatus = getUrlStatus()
@@ -145,6 +146,10 @@ export default function QRCodeDisplay() {
         }
     }
 
+    const handleVisit = () => {
+        window.open(displayUrl, "_blank")
+    }
+
     // display info based on contract state
     const getStatusDisplay = () => {
         const hasContractUrl = currentUrl && currentUrl.trim() !== "" && currentUrl !== defaultUrl
@@ -185,8 +190,6 @@ export default function QRCodeDisplay() {
 
     return (
         <div className="qr-card text-center">
-            <h2 className="text-xl font-bold text-white mb-4">Live QR Code</h2>
-
             {/* Status Badge */}
             <div className="mb-4">
                 <span
@@ -221,8 +224,8 @@ export default function QRCodeDisplay() {
                 </div>
             </div>
 
-            {/* URL Display */}
-            <div className="mb-5">
+            {/* URL Display with Integrated Action Icons */}
+            <div className="mb-4">
                 <div className="flex justify-between items-center mb-2">
                     <p className="text-sm text-gray-300">Destination:</p>
                     {!isShowingDefault && (
@@ -232,15 +235,47 @@ export default function QRCodeDisplay() {
                     )}
                 </div>
 
-                <div className="bg-gray-800/50 rounded-lg p-3 border border-gray-600 mb-2">
-                    <a
-                        href={displayUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-400 hover:text-blue-300 break-all text-sm"
-                    >
-                        {displayUrl.length > 45 ? `${displayUrl.substring(0, 45)}...` : displayUrl}
-                    </a>
+                <div className="bg-gray-800/50 rounded-lg border border-gray-600 mb-2">
+                    <div className="flex items-center">
+                        {/* URL Link - Takes most of the space */}
+                        <a
+                            href={displayUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 text-blue-400 hover:text-blue-300 break-all text-sm p-3 pr-2"
+                        >
+                            {displayUrl.length > 35
+                                ? `${displayUrl.substring(0, 35)}...`
+                                : displayUrl}
+                        </a>
+
+                        {/* Action Icons */}
+                        <div className="flex items-center gap-1 p-2 border-l border-gray-600">
+                            <button
+                                onClick={handleDownload}
+                                className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-700 rounded transition-all duration-200"
+                                title="Download QR Code"
+                            >
+                                <Download className="w-4 h-4" />
+                            </button>
+
+                            <button
+                                onClick={handleShare}
+                                className="p-1.5 text-gray-400 hover:text-blue-400 hover:bg-gray-700 rounded transition-all duration-200"
+                                title="Share URL"
+                            >
+                                <Share2 className="w-4 h-4" />
+                            </button>
+
+                            <button
+                                onClick={handleVisit}
+                                className="p-1.5 text-gray-400 hover:text-green-400 hover:bg-gray-700 rounded transition-all duration-200"
+                                title="Visit Website"
+                            >
+                                <ExternalLink className="w-4 h-4" />
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <p className={`text-sm ${isShowingDefault ? "text-gray-500" : "text-green-400"}`}>
@@ -284,30 +319,6 @@ export default function QRCodeDisplay() {
                     </div>
                 </div>
             )}
-
-            {/* Action Buttons */}
-            <div className="flex gap-3 justify-center mb-4">
-                <button
-                    onClick={handleDownload}
-                    className="px-4 py-2 text-sm bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
-                >
-                    📥 Save
-                </button>
-
-                <button
-                    onClick={handleShare}
-                    className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
-                >
-                    🔗 Share
-                </button>
-
-                <button
-                    onClick={() => window.open(displayUrl, "_blank")}
-                    className="px-4 py-2 text-sm bg-green-600 hover:bg-green-500 text-white rounded-lg transition-colors"
-                >
-                    🌐 Visit
-                </button>
-            </div>
 
             {/* Info */}
             <div className="text-sm text-gray-400">

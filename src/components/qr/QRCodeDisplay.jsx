@@ -6,11 +6,28 @@ import { useQRBidContract } from "../../hooks/useQRBidContract"
 export default function QRCodeDisplay() {
     const canvasRef = useRef(null)
     const [qrError, setQrError] = useState(null)
-    const { currentUrl, isAuctionActive } = useQRBidContract()
+    const { currentUrl, currentAuction, isAuctionActive } = useQRBidContract()
 
     // Default URL when no auction is active or no URL is set
     const defaultUrl = "https://github.com/your-username/qrbid-platform"
-    const displayUrl = currentUrl && currentUrl.trim() !== "" ? currentUrl : defaultUrl
+
+    // Get URL from multiple sources for better reliability
+    const getDisplayUrl = () => {
+        // Priority 1: Direct currentUrl from contract
+        if (currentUrl && currentUrl.trim() !== "") {
+            return currentUrl
+        }
+
+        // Priority 2: URL from currentAuction struct
+        if (currentAuction?.preferredUrl && currentAuction.preferredUrl.trim() !== "") {
+            return currentAuction.preferredUrl
+        }
+
+        // Priority 3: Default URL
+        return defaultUrl
+    }
+
+    const displayUrl = getDisplayUrl()
 
     useEffect(() => {
         const generateQR = async () => {
@@ -35,6 +52,17 @@ export default function QRCodeDisplay() {
 
         generateQR()
     }, [displayUrl])
+
+    // Debug logging
+    useEffect(() => {
+        console.log("QR Component Debug:", {
+            currentUrl,
+            currentAuctionUrl: currentAuction?.preferredUrl,
+            displayUrl,
+            isAuctionActive,
+            hasCurrentAuction: !!currentAuction,
+        })
+    }, [currentUrl, currentAuction, displayUrl, isAuctionActive])
 
     const handleDownload = () => {
         if (!canvasRef.current) return
@@ -68,6 +96,9 @@ export default function QRCodeDisplay() {
             console.error("Failed to share:", error)
         }
     }
+
+    // Determine if we're showing the default URL
+    const isShowingDefault = displayUrl === defaultUrl
 
     return (
         <div className="qr-card text-center">
@@ -115,8 +146,10 @@ export default function QRCodeDisplay() {
                         {displayUrl}
                     </a>
                 </div>
-                {displayUrl === defaultUrl && (
+                {isShowingDefault ? (
                     <p className="text-xs text-gray-500 mt-2">Default URL - No winning bid yet</p>
+                ) : (
+                    <p className="text-xs text-green-400 mt-2">Current winning bid destination</p>
                 )}
             </div>
 
@@ -126,7 +159,7 @@ export default function QRCodeDisplay() {
                     onClick={handleDownload}
                     className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors flex items-center gap-2"
                 >
-                    <span>📥</span>
+                    <span>⬇️</span>
                     Download
                 </button>
 
@@ -142,7 +175,7 @@ export default function QRCodeDisplay() {
                     onClick={() => window.open(displayUrl, "_blank")}
                     className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg transition-colors flex items-center gap-2"
                 >
-                    <span>🚀</span>
+                    <span>🌐</span>
                     Visit
                 </button>
             </div>
@@ -150,8 +183,9 @@ export default function QRCodeDisplay() {
             {/* Info */}
             <div className="mt-6 text-xs text-gray-500 space-y-1">
                 <p>🔄 QR Code updates automatically when auction changes</p>
-                <p>📱 Scan with any QR code reader</p>
-                {isAuctionActive && <p className="text-green-400">✨ Live auction in progress!</p>}
+                {isAuctionActive && isShowingDefault && (
+                    <p className="text-yellow-400">⏳ Waiting for first bid...</p>
+                )}
             </div>
         </div>
     )

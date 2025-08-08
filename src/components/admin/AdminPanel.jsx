@@ -8,12 +8,12 @@ export default function AdminPanel() {
 
     const isOwner = address && owner && address.toLowerCase() === owner.toLowerCase()
     if (!isOwner) {
-        return null // Don't show admin panel to non-owners
+        return null // admin panel
     }
 
     return (
         <div className="glass-card mb-8 border-yellow-500/20">
-            <h3 className="text-lg font-bold text-yellow-300 mb-4">🔧 Admin Panel</h3>
+            <h3 className="text-lg font-bold text-yellow-300 mb-4">Admin Panel</h3>
             <div className="flex gap-4">
                 <button
                     onClick={startAuction}

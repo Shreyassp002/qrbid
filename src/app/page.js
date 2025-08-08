@@ -2,12 +2,9 @@ import QRBidBackground from "../components/layout/QRBidBackground"
 import Header from "../components/layout/Header"
 import AuctionDisplay from "../components/auction/AuctionDisplay"
 import QRCodeDisplay from "../components/qr/QRCodeDisplay"
-import AdminPanel from "../components/admin/AdminPanel" // ADD THIS
+import AdminPanel from "../components/admin/AdminPanel"
 
 export default function Home() {
-    // Replace with your actual owner address (the address you deployed the contract with)
-    const OWNER_ADDRESS = "0x17A076d6cCaf37Bc9386EAB653A5EfAd8B07430C"
-
     return (
         <QRBidBackground>
             <Header />

@@ -3,7 +3,7 @@ import { QR_BID_ABI, CONTRACT_ADDRESSES } from "../config/contracts"
 import { sepolia } from "wagmi/chains"
 
 export function useQRBidContract() {
-    const contractAddress = CONTRACT_ADDRESSES.sepolia // or dynamic based on chain
+    const contractAddress = CONTRACT_ADDRESSES.sepolia
 
     // Read functions
     const { data: currentUrl } = useReadContract({
@@ -24,7 +24,7 @@ export function useQRBidContract() {
         functionName: "isAuctionActive",
     })
 
-    // Fix: s_currentAuction returns an array, not an object
+    // s_currentAuction returns an array
     const { data: currentAuctionRaw } = useReadContract({
         address: contractAddress,
         abi: QR_BID_ABI,
@@ -37,7 +37,7 @@ export function useQRBidContract() {
         functionName: "owner", // This comes from OpenZeppelin Ownable
     })
 
-    // Transform the raw array data into a structured object
+    // array data into a structured object
     const currentAuction = currentAuctionRaw
         ? {
               startingTime: currentAuctionRaw[0],
@@ -59,7 +59,7 @@ export function useQRBidContract() {
         currentUrl,
         timeRemaining,
         isAuctionActive,
-        currentAuction, // Now properly structured
+        currentAuction,
         owner,
 
         // Write functions

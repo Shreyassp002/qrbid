@@ -70,6 +70,12 @@ export const QR_BID_ABI = [
                 name: "timestamp",
                 type: "uint256",
             },
+            {
+                indexed: false,
+                internalType: "uint256",
+                name: "urlExpiryTime",
+                type: "uint256",
+            },
         ],
         name: "AuctionEnded",
         type: "event",
@@ -170,9 +176,137 @@ export const QR_BID_ABI = [
     },
     {
         inputs: [],
+        name: "URL_DISPLAY_DURATION",
+        outputs: [
+            {
+                internalType: "uint256",
+                name: "",
+                type: "uint256",
+            },
+        ],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [
+            {
+                internalType: "uint256",
+                name: "",
+                type: "uint256",
+            },
+        ],
+        name: "auctions",
+        outputs: [
+            {
+                internalType: "uint256",
+                name: "auctionId",
+                type: "uint256",
+            },
+            {
+                internalType: "uint256",
+                name: "startingTime",
+                type: "uint256",
+            },
+            {
+                internalType: "uint256",
+                name: "endingTime",
+                type: "uint256",
+            },
+            {
+                internalType: "uint256",
+                name: "highestBid",
+                type: "uint256",
+            },
+            {
+                internalType: "address",
+                name: "highestBidder",
+                type: "address",
+            },
+            {
+                internalType: "string",
+                name: "preferredUrl",
+                type: "string",
+            },
+            {
+                internalType: "bool",
+                name: "isEnded",
+                type: "bool",
+            },
+            {
+                internalType: "uint256",
+                name: "urlExpiryTime",
+                type: "uint256",
+            },
+        ],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [],
         name: "endAuction",
         outputs: [],
         stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [
+            {
+                internalType: "uint256",
+                name: "auctionId",
+                type: "uint256",
+            },
+        ],
+        name: "getAuction",
+        outputs: [
+            {
+                components: [
+                    {
+                        internalType: "uint256",
+                        name: "auctionId",
+                        type: "uint256",
+                    },
+                    {
+                        internalType: "uint256",
+                        name: "startingTime",
+                        type: "uint256",
+                    },
+                    {
+                        internalType: "uint256",
+                        name: "endingTime",
+                        type: "uint256",
+                    },
+                    {
+                        internalType: "uint256",
+                        name: "highestBid",
+                        type: "uint256",
+                    },
+                    {
+                        internalType: "address",
+                        name: "highestBidder",
+                        type: "address",
+                    },
+                    {
+                        internalType: "string",
+                        name: "preferredUrl",
+                        type: "string",
+                    },
+                    {
+                        internalType: "bool",
+                        name: "isEnded",
+                        type: "bool",
+                    },
+                    {
+                        internalType: "uint256",
+                        name: "urlExpiryTime",
+                        type: "uint256",
+                    },
+                ],
+                internalType: "struct QRBid.Auction",
+                name: "",
+                type: "tuple",
+            },
+        ],
+        stateMutability: "view",
         type: "function",
     },
     {
@@ -190,12 +324,38 @@ export const QR_BID_ABI = [
     },
     {
         inputs: [],
+        name: "getCurrentUrlExpiryTime",
+        outputs: [
+            {
+                internalType: "uint256",
+                name: "",
+                type: "uint256",
+            },
+        ],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [],
         name: "getTimeRemaining",
         outputs: [
             {
                 internalType: "uint256",
                 name: "",
                 type: "uint256",
+            },
+        ],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [],
+        name: "hasActiveUrl",
+        outputs: [
+            {
+                internalType: "bool",
+                name: "",
+                type: "bool",
             },
         ],
         stateMutability: "view",
@@ -305,6 +465,11 @@ export const QR_BID_ABI = [
         outputs: [
             {
                 internalType: "uint256",
+                name: "auctionId",
+                type: "uint256",
+            },
+            {
+                internalType: "uint256",
                 name: "startingTime",
                 type: "uint256",
             },
@@ -332,6 +497,59 @@ export const QR_BID_ABI = [
                 internalType: "bool",
                 name: "isEnded",
                 type: "bool",
+            },
+            {
+                internalType: "uint256",
+                name: "urlExpiryTime",
+                type: "uint256",
+            },
+        ],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [],
+        name: "s_lastCompletedAuction",
+        outputs: [
+            {
+                internalType: "uint256",
+                name: "auctionId",
+                type: "uint256",
+            },
+            {
+                internalType: "uint256",
+                name: "startingTime",
+                type: "uint256",
+            },
+            {
+                internalType: "uint256",
+                name: "endingTime",
+                type: "uint256",
+            },
+            {
+                internalType: "uint256",
+                name: "highestBid",
+                type: "uint256",
+            },
+            {
+                internalType: "address",
+                name: "highestBidder",
+                type: "address",
+            },
+            {
+                internalType: "string",
+                name: "preferredUrl",
+                type: "string",
+            },
+            {
+                internalType: "bool",
+                name: "isEnded",
+                type: "bool",
+            },
+            {
+                internalType: "uint256",
+                name: "urlExpiryTime",
+                type: "uint256",
             },
         ],
         stateMutability: "view",
@@ -386,13 +604,13 @@ export const QR_BID_ABI = [
 ]
 
 export const CONTRACT_ADDRESSES = {
-    sepolia: "0x26a3CeAd57c76ed576C7b29D2Df18E54F5bbD2C9", // Your deployed contract address
-    localhost: "0x5FbDB2315678afecb367f032d93F642f64180aa3", // Default Hardhat address
+    sepolia: "0x826fac1aA60614Ce82D49a1147823E669589b0F6", 
+    localhost: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
 }
 
 export const SUPPORTED_CHAINS = [
     {
-        id: 11155111, // Sepolia
+        id: 11155111, 
         name: "Sepolia",
         rpcUrls: ["https://rpc.sepolia.org"],
     },

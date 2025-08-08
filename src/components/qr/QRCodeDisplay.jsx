@@ -6,29 +6,62 @@ import { useQRBidContract } from "../../hooks/useQRBidContract"
 export default function QRCodeDisplay() {
     const canvasRef = useRef(null)
     const [qrError, setQrError] = useState(null)
-    const { currentUrl, currentAuction, isAuctionActive } = useQRBidContract()
+    const [urlTimeLeft, setUrlTimeLeft] = useState(0)
+
+    const {
+        currentUrl,
+        currentAuction,
+        lastCompletedAuction,
+        isAuctionActive,
+        hasActiveUrl,
+        currentUrlExpiryTime,
+        getUrlStatus,
+    } = useQRBidContract()
 
     // Default URL when no auction is active or no URL is set
-    const defaultUrl = "https://github.com/"
+    const defaultUrl = "https://github.com/Shreyassp002"
 
-    // Get URL from multiple sources for better reliability
+    // Get URL status and display information
+    const urlStatus = getUrlStatus()
+
+    // Get URL with contract-first priority (contract handles the 24h winner display logic)
     const getDisplayUrl = () => {
-        // Priority 1: Direct currentUrl from contract
+        // Priority 1: ALWAYS use currentUrl from contract first
         if (currentUrl && currentUrl.trim() !== "") {
             return currentUrl
         }
 
-        // Priority 2: URL from currentAuction struct
-        if (currentAuction?.preferredUrl && currentAuction.preferredUrl.trim() !== "") {
-            return currentAuction.preferredUrl
-        }
-
-        // Priority 3: Default URL
+        // Priority 2: Fallback to default URL only if contract returns empty
         return defaultUrl
     }
 
     const displayUrl = getDisplayUrl()
+    const isShowingDefault = displayUrl === defaultUrl
 
+    // update countdown for URL expiry
+    useEffect(() => {
+        if (currentUrlExpiryTime) {
+            const now = Math.floor(Date.now() / 1000)
+            const remaining = Number(currentUrlExpiryTime) - now
+            setUrlTimeLeft(remaining > 0 ? remaining : 0)
+        }
+    }, [currentUrlExpiryTime])
+
+    // Countdown timer for URL expiry
+    useEffect(() => {
+        if (urlTimeLeft <= 0) return
+
+        const interval = setInterval(() => {
+            setUrlTimeLeft((prevTime) => {
+                const newTime = prevTime - 1
+                return newTime <= 0 ? 0 : newTime
+            })
+        }, 1000)
+
+        return () => clearInterval(interval)
+    }, [urlTimeLeft])
+
+    // Generate QR code whenever URL changes
     useEffect(() => {
         const generateQR = async () => {
             if (!canvasRef.current || !displayUrl) return
@@ -53,16 +86,34 @@ export default function QRCodeDisplay() {
         generateQR()
     }, [displayUrl])
 
-    // Debug logging
+    // Debug
     useEffect(() => {
         console.log("QR Component Debug:", {
-            currentUrl,
-            currentAuctionUrl: currentAuction?.preferredUrl,
+            contractCurrentUrl: currentUrl,
             displayUrl,
             isAuctionActive,
-            hasCurrentAuction: !!currentAuction,
+            hasActiveUrl,
+            currentUrlExpiryTime: currentUrlExpiryTime?.toString(),
+            urlTimeLeft,
+            isShowingDefault,
         })
-    }, [currentUrl, currentAuction, displayUrl, isAuctionActive])
+    }, [
+        currentUrl,
+        displayUrl,
+        isAuctionActive,
+        hasActiveUrl,
+        currentUrlExpiryTime,
+        urlTimeLeft,
+        isShowingDefault,
+    ])
+
+    // Format time remaining
+    const formatTimeRemaining = (seconds) => {
+        const hours = Math.floor(seconds / 3600)
+        const minutes = Math.floor((seconds % 3600) / 60)
+        const secs = seconds % 60
+        return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
+    }
 
     const handleDownload = () => {
         if (!canvasRef.current) return
@@ -94,7 +145,43 @@ export default function QRCodeDisplay() {
         }
     }
 
-    const isShowingDefault = displayUrl === defaultUrl
+    // display info based on contract state
+    const getStatusDisplay = () => {
+        const hasContractUrl = currentUrl && currentUrl.trim() !== "" && currentUrl !== defaultUrl
+
+        if (isAuctionActive) {
+            if (hasContractUrl) {
+                return {
+                    badge: "🔴 Live Auction",
+                    badgeClass: "bg-green-500/20 text-green-300 border border-green-500/30",
+                    subtitle: "Current highest bidder's URL",
+                }
+            } else {
+                return {
+                    badge: "🔴 Live Auction",
+                    badgeClass: "bg-green-500/20 text-green-300 border border-green-500/30",
+                    subtitle: "No bids yet",
+                }
+            }
+        }
+
+        // If no active auction but we have a URL from contract, it must be winner display
+        if (hasContractUrl) {
+            return {
+                badge: "🏆 Winner Display",
+                badgeClass: "bg-blue-500/20 text-blue-300 border border-blue-500/30",
+                subtitle: `Winner's URL (${formatTimeRemaining(urlTimeLeft)} remaining)`,
+            }
+        }
+
+        return {
+            badge: "⏳ No Active URL",
+            badgeClass: "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30",
+            subtitle: "Default URL - No active auction or winner",
+        }
+    }
+
+    const statusDisplay = getStatusDisplay()
 
     return (
         <div className="qr-card text-center">
@@ -103,15 +190,20 @@ export default function QRCodeDisplay() {
             {/* Status Badge */}
             <div className="mb-4">
                 <span
-                    className={`inline-block px-4 py-2 rounded-full text-sm font-medium ${
-                        isAuctionActive
-                            ? "bg-green-500/20 text-green-300 border border-green-500/30"
-                            : "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30"
-                    }`}
+                    className={`inline-block px-4 py-2 rounded-full text-sm font-medium ${statusDisplay.badgeClass}`}
                 >
-                    {isAuctionActive ? "🔴 Live Auction" : "⏳ No Auction"}
+                    {statusDisplay.badge}
                 </span>
             </div>
+
+            {/* Auction Info */}
+            {isAuctionActive && currentAuction && (
+                <div className="mb-4 text-sm">
+                    <span className="text-gray-300">
+                        Auction #{currentAuction.auctionId?.toString()}
+                    </span>
+                </div>
+            )}
 
             {/* QR Code */}
             <div className="mb-4 flex justify-center">
@@ -131,8 +223,16 @@ export default function QRCodeDisplay() {
 
             {/* URL Display */}
             <div className="mb-5">
-                <p className="text-sm text-gray-300 mb-2">Destination:</p>
-                <div className="bg-gray-800/50 rounded-lg p-3 border border-gray-600">
+                <div className="flex justify-between items-center mb-2">
+                    <p className="text-sm text-gray-300">Destination:</p>
+                    {!isShowingDefault && (
+                        <span className="text-xs px-2 py-1 bg-gray-700 rounded text-gray-300">
+                            {isAuctionActive ? "Current Auction" : "Recent Winner"}
+                        </span>
+                    )}
+                </div>
+
+                <div className="bg-gray-800/50 rounded-lg p-3 border border-gray-600 mb-2">
                     <a
                         href={displayUrl}
                         target="_blank"
@@ -142,12 +242,48 @@ export default function QRCodeDisplay() {
                         {displayUrl.length > 45 ? `${displayUrl.substring(0, 45)}...` : displayUrl}
                     </a>
                 </div>
-                {isShowingDefault ? (
-                    <p className="text-sm text-gray-500 mt-2">Default - No bids yet</p>
-                ) : (
-                    <p className="text-sm text-green-400 mt-2">Winner's destination</p>
+
+                <p className={`text-sm ${isShowingDefault ? "text-gray-500" : "text-green-400"}`}>
+                    {statusDisplay.subtitle}
+                </p>
+
+                {/* URL expiry countdown - show only when displaying winner URL and not in active auction */}
+                {!isAuctionActive && !isShowingDefault && urlTimeLeft > 0 && (
+                    <div className="mt-2 p-2 bg-yellow-500/10 rounded border border-yellow-500/30">
+                        <div className="flex justify-between items-center text-xs">
+                            <span className="text-yellow-300">Winner URL expires in:</span>
+                            <span className="text-yellow-300 font-mono font-bold">
+                                {formatTimeRemaining(urlTimeLeft)}
+                            </span>
+                        </div>
+                    </div>
                 )}
             </div>
+
+            {/* Winner Display Info - show when not in active auction but showing winner URL */}
+            {!isAuctionActive && !isShowingDefault && lastCompletedAuction && (
+                <div className="mb-4 p-3 bg-blue-900/20 rounded-lg border border-blue-500/30 text-sm">
+                    <p className="text-blue-300 font-medium mb-2">
+                        🏆 Current Winner (24h Display)
+                    </p>
+                    <div className="space-y-1">
+                        <div className="flex justify-between">
+                            <span className="text-gray-300">Auction:</span>
+                            <span className="text-white">
+                                #{lastCompletedAuction.auctionId?.toString()}
+                            </span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-gray-300">Winner:</span>
+                            <span className="text-white font-mono text-xs">
+                                {lastCompletedAuction.highestBidder
+                                    ? `${lastCompletedAuction.highestBidder.slice(0, 6)}...${lastCompletedAuction.highestBidder.slice(-4)}`
+                                    : "No winner"}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Action Buttons */}
             <div className="flex gap-3 justify-center mb-4">
@@ -176,6 +312,9 @@ export default function QRCodeDisplay() {
             {/* Info */}
             <div className="text-sm text-gray-400">
                 <p>🔄 Updates automatically</p>
+                {!isAuctionActive && !isShowingDefault && (
+                    <p className="mt-1">⏰ Winner gets 24h display time</p>
+                )}
             </div>
         </div>
     )

@@ -13,7 +13,7 @@ export default function Header() {
                         </span>
                     </div>
 
-                    <nav className="hidden md:flex space-x-8">
+                    {/* <nav className="hidden md:flex space-x-8">
                         <a href="#" className="text-gray-300 hover:text-white">
                             Auctions
                         </a>
@@ -23,7 +23,7 @@ export default function Header() {
                         <a href="#" className="text-gray-300 hover:text-white">
                             Stats
                         </a>
-                    </nav>
+                    </nav> */}
 
                     <ConnectButton />
                 </div>

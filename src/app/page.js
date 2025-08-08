@@ -1,8 +1,9 @@
-import QRBidBackground from "../components/layout/QRBidBackground"
-import Header from "../components/layout/Header"
-import AuctionDisplay from "../components/auction/AuctionDisplay"
-import QRCodeDisplay from "../components/qr/QRCodeDisplay"
-import AdminPanel from "../components/admin/AdminPanel"
+import QRBidBackground from "@/components/layout/QRBidBackground"
+import Header from "@/components/layout/Header"
+import AuctionDisplay from "@/components/auction/AuctionDisplay"
+import QRCodeDisplay from "@/components/qr/QRCodeDisplay"
+import AdminPanel from "@/components/admin/AdminPanel"
+import Footer from "@/components/layout/Footer"
 
 export default function Home() {
     return (
@@ -24,6 +25,7 @@ export default function Home() {
                     <AuctionDisplay />
                 </div>
             </div>
+            <Footer/>
         </QRBidBackground>
     )
 }

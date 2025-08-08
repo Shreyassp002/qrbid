@@ -9,7 +9,7 @@ export default function QRCodeDisplay() {
     const { currentUrl, currentAuction, isAuctionActive } = useQRBidContract()
 
     // Default URL when no auction is active or no URL is set
-    const defaultUrl = "https://github.com/Shreyassp002/"
+    const defaultUrl = "https://github.com/"
 
     // Get URL from multiple sources for better reliability
     const getDisplayUrl = () => {
@@ -145,7 +145,7 @@ export default function QRCodeDisplay() {
                 {isShowingDefault ? (
                     <p className="text-sm text-gray-500 mt-2">Default - No bids yet</p>
                 ) : (
-                    <p className="text-sm text-green-400 mt-2">✨ Winner's destination</p>
+                    <p className="text-sm text-green-400 mt-2">Winner's destination</p>
                 )}
             </div>
 
@@ -176,9 +176,6 @@ export default function QRCodeDisplay() {
             {/* Info */}
             <div className="text-sm text-gray-400">
                 <p>🔄 Updates automatically</p>
-                {isAuctionActive && isShowingDefault && (
-                    <p className="text-yellow-400 mt-1">⏳ Awaiting first bid</p>
-                )}
             </div>
         </div>
     )

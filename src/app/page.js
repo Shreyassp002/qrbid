@@ -16,7 +16,6 @@ export default function Home() {
                     </p>
                 </div>
 
-                {/* ADD ADMIN PANEL HERE */}
                 <div className="max-w-6xl mx-auto mb-8">
                     <AdminPanel />
                 </div>

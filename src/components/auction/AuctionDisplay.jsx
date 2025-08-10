@@ -30,7 +30,7 @@ export default function AuctionDisplay() {
         }
     }, [timeRemaining])
 
-    // Countdown timer for auction 
+    // Countdown timer for auction
     useEffect(() => {
         if (timeLeft <= 0) return
 
@@ -83,7 +83,7 @@ export default function AuctionDisplay() {
         : "0.01"
 
     return (
-        <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl border border-gray-700 p-6">
+        <div className="qr-card">
             <div className="mb-4">
                 <h2 className="text-xl font-bold text-white mb-4">Current Auction</h2>
 
@@ -229,7 +229,6 @@ export default function AuctionDisplay() {
             ) : !isConnected ? (
                 <div className="text-center py-6">
                     <p className="text-gray-400 mb-4">Connect your wallet to place bids</p>
-                    <ConnectButton />
                 </div>
             ) : !isAuctionActive ? (
                 <div className="text-center py-6">

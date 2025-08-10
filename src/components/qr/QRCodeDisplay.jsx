@@ -170,7 +170,7 @@ export default function QRCodeDisplay() {
 
             {/* Info */}
             <div className="text-sm text-gray-400">
-                <p>🔄 Updates automatically</p>
+                <p>Updates automatically</p>
                 <p className="mt-1">🏆 Winners get 24h display time</p>
             </div>
         </div>

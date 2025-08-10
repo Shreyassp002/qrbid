@@ -311,7 +311,7 @@ export const QR_BID_ABI = [
     },
     {
         inputs: [],
-        name: "getCurrentUrl",
+        name: "getCurrentAuctionUrl",
         outputs: [
             {
                 internalType: "string",
@@ -324,12 +324,43 @@ export const QR_BID_ABI = [
     },
     {
         inputs: [],
-        name: "getCurrentUrlExpiryTime",
+        name: "getQRUrl",
+        outputs: [
+            {
+                internalType: "string",
+                name: "",
+                type: "string",
+            },
+        ],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [],
+        name: "getQRUrlExpiryTime",
         outputs: [
             {
                 internalType: "uint256",
                 name: "",
                 type: "uint256",
+            },
+        ],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [],
+        name: "getQRUrlStatus",
+        outputs: [
+            {
+                internalType: "string",
+                name: "status",
+                type: "string",
+            },
+            {
+                internalType: "string",
+                name: "source",
+                type: "string",
             },
         ],
         stateMutability: "view",
@@ -350,7 +381,7 @@ export const QR_BID_ABI = [
     },
     {
         inputs: [],
-        name: "hasActiveUrl",
+        name: "hasActiveQRUrl",
         outputs: [
             {
                 internalType: "bool",
@@ -604,13 +635,13 @@ export const QR_BID_ABI = [
 ]
 
 export const CONTRACT_ADDRESSES = {
-    sepolia: "0x826fac1aA60614Ce82D49a1147823E669589b0F6", 
+    sepolia: "0x9719755e51BA1A339E0139c2F0E7e919982e5A2D",
     localhost: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
 }
 
 export const SUPPORTED_CHAINS = [
     {
-        id: 11155111, 
+        id: 11155111,
         name: "Sepolia",
         rpcUrls: ["https://rpc.sepolia.org"],
     },

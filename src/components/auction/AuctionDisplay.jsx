@@ -1,21 +1,19 @@
 "use client"
 import { useState, useEffect } from "react"
+import { parseEther, formatEther } from "viem"
+
 import { ConnectButton } from "@rainbow-me/rainbowkit"
 import { useAccount } from "wagmi"
-import { parseEther, formatEther } from "viem"
 import { useQRBidContract } from "../../hooks/useQRBidContract"
 
 export default function AuctionDisplay() {
     const { isConnected, address } = useAccount()
     const {
-        currentUrl,
+        currentAuctionUrl,
         timeRemaining,
         isAuctionActive,
         currentAuction,
         lastCompletedAuction,
-        hasActiveUrl,
-        currentUrlExpiryTime,
-        getUrlStatus,
         placeBid,
         isBidding,
         refetchAll,
@@ -24,7 +22,6 @@ export default function AuctionDisplay() {
     const [bidUrl, setBidUrl] = useState("")
     const [bidAmount, setBidAmount] = useState("")
     const [timeLeft, setTimeLeft] = useState(0)
-    const [urlTimeLeft, setUrlTimeLeft] = useState(0)
 
     // update countdown for auction
     useEffect(() => {
@@ -33,16 +30,7 @@ export default function AuctionDisplay() {
         }
     }, [timeRemaining])
 
-    // update countdown for URL expiry
-    useEffect(() => {
-        if (currentUrlExpiryTime) {
-            const now = Math.floor(Date.now() / 1000)
-            const remaining = Number(currentUrlExpiryTime) - now
-            setUrlTimeLeft(remaining > 0 ? remaining : 0)
-        }
-    }, [currentUrlExpiryTime])
-
-    // Countdown timer for auction - decrements every second
+    // Countdown timer for auction 
     useEffect(() => {
         if (timeLeft <= 0) return
 
@@ -55,24 +43,6 @@ export default function AuctionDisplay() {
 
         return () => clearInterval(interval)
     }, [timeLeft])
-
-    // Countdown timer for URL expiry - decrements every second
-    useEffect(() => {
-        if (urlTimeLeft <= 0) return
-
-        const interval = setInterval(() => {
-            setUrlTimeLeft((prevTime) => {
-                const newTime = prevTime - 1
-                if (newTime <= 0) {
-                    refetchAll()
-                    return 0
-                }
-                return newTime
-            })
-        }, 1000)
-
-        return () => clearInterval(interval)
-    }, [urlTimeLeft, refetchAll])
 
     // Format time remaining
     const formatTimeRemaining = (seconds) => {
@@ -105,9 +75,6 @@ export default function AuctionDisplay() {
         }
     }
 
-    // Get URL status info
-    const urlStatus = getUrlStatus()
-
     // bid amount calculation
     const minimumBid = currentAuction
         ? currentAuction.highestBid && currentAuction.highestBid > 0n
@@ -116,7 +83,7 @@ export default function AuctionDisplay() {
         : "0.01"
 
     return (
-        <div className="auction-card">
+        <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl border border-gray-700 p-6">
             <div className="mb-4">
                 <h2 className="text-xl font-bold text-white mb-4">Current Auction</h2>
 
@@ -179,73 +146,37 @@ export default function AuctionDisplay() {
                     )}
                 </div>
 
-                {/* Current URL */}
-                {(currentUrl || hasActiveUrl) && (
-                    <div className="mb-4 p-3 bg-gray-800/50 rounded-lg border border-gray-600">
+                {/* Current Auction URL - Only show during active auction with bids */}
+                {isAuctionActive && currentAuctionUrl && currentAuctionUrl.trim() !== "" && (
+                    <div className="mb-4 p-3 bg-green-500/10 rounded-lg border border-green-500/30">
                         <div className="flex justify-between items-center mb-2">
-                            <p className="text-sm text-gray-300">Current URL:</p>
-                            <span
-                                className={`text-xs px-2 py-1 rounded ${
-                                    urlStatus.status === "auction_active"
-                                        ? "bg-green-500/20 text-green-300"
-                                        : "bg-blue-500/20 text-blue-300"
-                                }`}
-                            >
-                                {urlStatus.source}
+                            <p className="text-sm text-green-300">Current Auction URL:</p>
+                            <span className="text-xs px-2 py-1 bg-green-500/20 text-green-300 rounded">
+                                Leading Bidder
                             </span>
                         </div>
 
                         <a
-                            href={currentUrl || urlStatus.url}
+                            href={currentAuctionUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-400 hover:text-blue-300 text-sm break-all block mb-2"
+                            className="text-blue-400 hover:text-blue-300 text-sm break-all block"
                         >
-                            {currentUrl || urlStatus.url}
+                            {currentAuctionUrl}
                         </a>
 
-                        {/* URL expiry countdown for winner display */}
-                        {urlStatus.status === "winner_display" && urlTimeLeft > 0 && (
-                            <div className="flex justify-between items-center text-xs">
-                                <span className="text-gray-400">URL expires in:</span>
-                                <span className="text-yellow-300 font-mono">
-                                    {formatTimeRemaining(urlTimeLeft)}
-                                </span>
-                            </div>
-                        )}
+                        <p className="text-xs text-green-400 mt-1">
+                            This URL will be displayed on QR code if this bid wins
+                        </p>
                     </div>
                 )}
 
-                {/* Show last completed auction info when no active auction */}
-                {!isAuctionActive && lastCompletedAuction && (
-                    <div className="mb-4 p-3 bg-blue-900/20 rounded-lg border border-blue-500/30">
-                        <p className="text-sm text-blue-300 font-medium mb-2">
-                            Last Completed Auction
+                {/* Show message when auction is active but no bids */}
+                {isAuctionActive && (!currentAuctionUrl || currentAuctionUrl.trim() === "") && (
+                    <div className="mb-4 p-3 bg-yellow-500/10 rounded-lg border border-yellow-500/30">
+                        <p className="text-sm text-yellow-300 text-center">
+                            No bids placed yet - be the first to bid!
                         </p>
-                        <div className="space-y-1 text-sm">
-                            <div className="flex justify-between">
-                                <span className="text-gray-300">Auction #:</span>
-                                <span className="text-white">
-                                    {lastCompletedAuction.auctionId?.toString()}
-                                </span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-gray-300">Winner:</span>
-                                <span className="text-white font-mono">
-                                    {lastCompletedAuction.highestBidder
-                                        ? `${lastCompletedAuction.highestBidder.slice(0, 6)}...${lastCompletedAuction.highestBidder.slice(-4)}`
-                                        : "No winner"}
-                                </span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-gray-300">Winning Bid:</span>
-                                <span className="text-white">
-                                    {lastCompletedAuction.highestBid
-                                        ? `${formatEther(lastCompletedAuction.highestBid)} ETH`
-                                        : "0 ETH"}
-                                </span>
-                            </div>
-                        </div>
                     </div>
                 )}
             </div>
@@ -265,6 +196,9 @@ export default function AuctionDisplay() {
                             className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
                             required
                         />
+                        <p className="text-xs text-gray-400 mt-1">
+                            This URL will be shown on the QR code if you win
+                        </p>
                     </div>
 
                     <div>
@@ -287,14 +221,15 @@ export default function AuctionDisplay() {
                     <button
                         onClick={handlePlaceBid}
                         disabled={isBidding || !isValidUrl(bidUrl) || !bidAmount}
-                        className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-lg transition-colors"
                     >
                         {isBidding ? "Placing Bid..." : "Place Bid"}
                     </button>
                 </div>
             ) : !isConnected ? (
                 <div className="text-center py-6">
-                    <p className="text-gray-400 mb-2">Connect your wallet to place bids</p>
+                    <p className="text-gray-400 mb-4">Connect your wallet to place bids</p>
+                    <ConnectButton />
                 </div>
             ) : !isAuctionActive ? (
                 <div className="text-center py-6">

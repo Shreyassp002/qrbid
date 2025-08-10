@@ -5,11 +5,18 @@ import { sepolia } from "wagmi/chains"
 export function useQRBidContract() {
     const contractAddress = CONTRACT_ADDRESSES.sepolia
 
-    // Read functions
-    const { data: currentUrl, refetch: refetchCurrentUrl } = useReadContract({
+    // Main QR URL 
+    const { data: qrUrl, refetch: refetchQRUrl } = useReadContract({
         address: contractAddress,
         abi: QR_BID_ABI,
-        functionName: "getCurrentUrl",
+        functionName: "getQRUrl",
+    })
+
+    // Current auction URL 
+    const { data: currentAuctionUrl, refetch: refetchCurrentAuctionUrl } = useReadContract({
+        address: contractAddress,
+        abi: QR_BID_ABI,
+        functionName: "getCurrentAuctionUrl",
     })
 
     const { data: timeRemaining, refetch: refetchTimeRemaining } = useReadContract({
@@ -24,21 +31,35 @@ export function useQRBidContract() {
         functionName: "isAuctionActive",
     })
 
-    // Check if there's any valid URL (from active auction or last completed within 24h)
-    const { data: hasActiveUrl } = useReadContract({
+    // QR has any URL currently active
+    const { data: hasActiveQRUrl } = useReadContract({
         address: contractAddress,
         abi: QR_BID_ABI,
-        functionName: "hasActiveUrl",
+        functionName: "hasActiveQRUrl",
     })
 
-    // Get URL expiry time
-    const { data: currentUrlExpiryTime } = useReadContract({
+    // QR URL status
+    const { data: qrUrlStatusRaw, refetch: refetchQRUrlStatus } = useReadContract({
         address: contractAddress,
         abi: QR_BID_ABI,
-        functionName: "getCurrentUrlExpiryTime",
+        functionName: "getQRUrlStatus",
     })
 
-    // s_currentAuction returns an array 
+    // QR URL expiry time
+    const { data: qrUrlExpiryTime, refetch: refetchQRUrlExpiryTime } = useReadContract({
+        address: contractAddress,
+        abi: QR_BID_ABI,
+        functionName: "getQRUrlExpiryTime",
+    })
+
+    const qrUrlStatus = qrUrlStatusRaw
+        ? {
+              status: qrUrlStatusRaw[0],
+              source: qrUrlStatusRaw[1],
+          }
+        : null
+
+    // s_currentAuction returns an array
     const { data: currentAuctionRaw, refetch: refetchCurrentAuction } = useReadContract({
         address: contractAddress,
         abi: QR_BID_ABI,
@@ -46,7 +67,7 @@ export function useQRBidContract() {
     })
 
     // Last completed auction
-    const { data: lastCompletedAuctionRaw } = useReadContract({
+    const { data: lastCompletedAuctionRaw, refetch: refetchLastCompleted } = useReadContract({
         address: contractAddress,
         abi: QR_BID_ABI,
         functionName: "s_lastCompletedAuction",
@@ -64,7 +85,7 @@ export function useQRBidContract() {
         functionName: "s_auctionCounter",
     })
 
-    // Convert array data into structured objects with NEW fields
+    // Convert array data into structured objects
     const currentAuction = currentAuctionRaw
         ? {
               auctionId: currentAuctionRaw[0],
@@ -119,59 +140,35 @@ export function useQRBidContract() {
             : null
     }
 
-    // Helper function to determine URL status
-    const getUrlStatus = () => {
-        if (isAuctionActive && currentAuction?.preferredUrl) {
-            return {
-                status: "auction_active",
-                source: "Current Auction",
-                url: currentAuction.preferredUrl,
-                expiryTime: currentUrlExpiryTime,
-            }
-        }
-
-        if (hasActiveUrl && lastCompletedAuction?.preferredUrl) {
-            const now = Math.floor(Date.now() / 1000)
-            if (lastCompletedAuction.urlExpiryTime && now < lastCompletedAuction.urlExpiryTime) {
-                return {
-                    status: "winner_display",
-                    source: "Recent Winner",
-                    url: lastCompletedAuction.preferredUrl,
-                    expiryTime: lastCompletedAuction.urlExpiryTime,
-                }
-            }
-        }
-
-        return {
-            status: "no_url",
-            source: null,
-            url: null,
-            expiryTime: null,
-        }
-    }
-
     // Refetch all data function
     const refetchAll = () => {
-        refetchCurrentUrl()
+        refetchQRUrl()
+        refetchCurrentAuctionUrl()
         refetchTimeRemaining()
         refetchIsActive()
         refetchCurrentAuction()
+        refetchLastCompleted()
+        refetchQRUrlStatus()
+        refetchQRUrlExpiryTime()
     }
 
     return {
-        // Read data
-        currentUrl,
+        // QR-specific data
+        qrUrl, 
+        currentAuctionUrl, 
+        hasActiveQRUrl,
+        qrUrlStatus,
+        qrUrlExpiryTime,
+
+        // Existing auction data
         timeRemaining,
         isAuctionActive,
         currentAuction,
         lastCompletedAuction,
-        hasActiveUrl,
-        currentUrlExpiryTime,
         owner,
         auctionCounter,
 
         // Helper functions
-        getUrlStatus,
         getAuction,
         refetchAll,
 

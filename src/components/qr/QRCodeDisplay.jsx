@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import { Download, Share2, ExternalLink } from "lucide-react"
 import QRCodeLib from "qrcode"
 import { useQRBidContract } from "../../hooks/useQRBidContract"
+import SafeIframe from "./SafeIframe"
 
 export default function QRCodeDisplay() {
     const canvasRef = useRef(null)
@@ -160,6 +161,7 @@ export default function QRCodeDisplay() {
                         </div>
                     </div>
                 </div>
+                <SafeIframe src={displayUrl} />
 
                 <p className={`text-sm ${isShowingDefault ? "text-gray-500" : "text-blue-400"}`}>
                     {isShowingDefault

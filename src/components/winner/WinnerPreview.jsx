@@ -1,47 +1,17 @@
 "use client"
-import { useState, useEffect } from "react"
-import { ExternalLink, Clock, Trophy } from "lucide-react"
+import { useState } from "react"
+import { ExternalLink, Trophy, Eye, EyeOff } from "lucide-react"
 import { formatEther } from "viem"
 import { useQRBidContract } from "../../hooks/useQRBidContract"
+import SafeIframe from "../qr/SafeIframe"
 
 export default function WinnerPreview() {
-    const [urlTimeLeft, setUrlTimeLeft] = useState(0)
+    const [showPreview, setShowPreview] = useState(true)
 
-    const { qrUrl, qrUrlStatus, qrUrlExpiryTime, lastCompletedAuction } = useQRBidContract()
+    const { qrUrl, qrUrlStatus, lastCompletedAuction } = useQRBidContract()
 
-    // Only show if there's a winner URL 
+    // Only show if there's a winner URL
     const hasWinnerUrl = qrUrl && qrUrl.trim() !== "" && qrUrlStatus?.status === "winner_display"
-
-    // Update countdown for URL expiry
-    useEffect(() => {
-        if (qrUrlExpiryTime) {
-            const now = Math.floor(Date.now() / 1000)
-            const remaining = Number(qrUrlExpiryTime) - now
-            setUrlTimeLeft(remaining > 0 ? remaining : 0)
-        }
-    }, [qrUrlExpiryTime])
-
-    // Countdown timer for URL expiry
-    useEffect(() => {
-        if (urlTimeLeft <= 0) return
-
-        const interval = setInterval(() => {
-            setUrlTimeLeft((prevTime) => {
-                const newTime = prevTime - 1
-                return newTime <= 0 ? 0 : newTime
-            })
-        }, 1000)
-
-        return () => clearInterval(interval)
-    }, [urlTimeLeft])
-
-    // Format time remaining
-    const formatTimeRemaining = (seconds) => {
-        const hours = Math.floor(seconds / 3600)
-        const minutes = Math.floor((seconds % 3600) / 60)
-        const secs = seconds % 60
-        return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
-    }
 
     // Don't render if no winner URL is active
     if (!hasWinnerUrl || !lastCompletedAuction) {
@@ -87,19 +57,6 @@ export default function WinnerPreview() {
                             : "0 ETH"}
                     </span>
                 </div>
-
-                {/* Countdown */}
-                {urlTimeLeft > 0 && (
-                    <div className="flex justify-between items-center p-3 bg-yellow-500/10 rounded-lg border border-yellow-500/30">
-                        <div className="flex items-center gap-2">
-                            <Clock className="w-4 h-4 text-yellow-400" />
-                            <span className="text-yellow-300 text-sm">Display expires in:</span>
-                        </div>
-                        <span className="text-yellow-300 font-mono font-bold">
-                            {formatTimeRemaining(urlTimeLeft)}
-                        </span>
-                    </div>
-                )}
             </div>
 
             {/* URL Preview */}
@@ -121,16 +78,41 @@ export default function WinnerPreview() {
                         >
                             {qrUrl}
                         </a>
-                        <button
-                            onClick={() => window.open(qrUrl, "_blank")}
-                            className="p-2 text-gray-400 hover:text-green-400 hover:bg-gray-700 rounded transition-all duration-200 border-l border-gray-600"
-                            title="Visit Winner's Website"
-                        >
-                            <ExternalLink className="w-4 h-4" />
-                        </button>
+                        <div className="flex border-l border-gray-600">
+                            <button
+                                onClick={() => setShowPreview(!showPreview)}
+                                className="p-2 text-gray-400 hover:text-blue-400 hover:bg-gray-700 rounded-l transition-all duration-200"
+                                title={showPreview ? "Hide Preview" : "Show Preview"}
+                            >
+                                {showPreview ? (
+                                    <EyeOff className="w-4 h-4" />
+                                ) : (
+                                    <Eye className="w-4 h-4" />
+                                )}
+                            </button>
+                            <button
+                                onClick={() => window.open(qrUrl, "_blank")}
+                                className="p-2 text-gray-400 hover:text-green-400 hover:bg-gray-700 rounded-r transition-all duration-200 border-l border-gray-600"
+                                title="Visit Winner's Website"
+                            >
+                                <ExternalLink className="w-4 h-4" />
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            {/* Website Preview */}
+            {showPreview && (
+                <div className="mb-4">
+                    <div className="bg-gray-800/30 rounded-lg border border-gray-600 overflow-hidden">
+                        <div className="bg-gray-700/50 px-3 py-2 border-b border-gray-600">
+                            <p className="text-xs text-gray-300">Website Preview</p>
+                        </div>
+                        <SafeIframe src={qrUrl} />
+                    </div>
+                </div>
+            )}
 
             {/* Status Message */}
             <div className="text-center">

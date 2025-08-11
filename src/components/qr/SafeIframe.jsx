@@ -44,7 +44,7 @@ export default function SafeIframe({ src }) {
                         height: "500px",
                         borderRadius: "12px",
                         // overflow: "auto",
-                        margin: '10px 0',
+                        margin: "10px 0",
                     }}
                 >
                     <iframe
@@ -65,7 +65,7 @@ export default function SafeIframe({ src }) {
             )}
             {isAllowed === false && (
                 <div>
-                    <p className="text-red-500 text-center py-5">
+                    <p className="text-blue-500 text-center py-5">
                         Embedding this site is not allowed.{" "}
                         <a href={src} target="_blank" rel="noopener noreferrer">
                             Open in new tab

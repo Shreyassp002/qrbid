@@ -1,20 +1,20 @@
-import QRBidBackground from "@/components/layout/QRBidBackground"
-import Header from "@/components/layout/Header"
-import AuctionDisplay from "@/components/auction/AuctionDisplay"
-import QRCodeDisplay from "@/components/qr/QRCodeDisplay"
-import WinnerPreview from "@/components/winner/WinnerPreview"
-import AdminPanel from "@/components/admin/AdminPanel"
-import Footer from "@/components/layout/Footer"
+import QRBidBackground from "@/components/auction/layout/QRBidBackground"
+import Header from "@/components/landing/Header"
+import AuctionDisplay from "@/components/auction/auctionPanel/AuctionDisplay"
+import QRCodeDisplay from "@/components/auction/qr/QRCodeDisplay"
+import WinnerPreview from "@/components/auction/winner/WinnerPreview"
+import AdminPanel from "@/components/auction/admin/AdminPanel"
+import Footer from "@/components/auction/layout/Footer"
 
 export default function Auction() {
     return (
         <QRBidBackground>
             {/* Full height container with flex layout */}
             <div className="min-h-screen flex flex-col">
-                <Header />
+                <Header currentPage="auction" />
 
                 {/* Main content area that grows to push footer down */}
-                <main className="flex-1 p-8">
+                <main className="flex-1 p-8 pt-24">
                     <div className="text-center mb-12">
                         <p className="text-xl text-gray-300 max-w-2xl mx-auto">
                             Bid to control where the QR code points!

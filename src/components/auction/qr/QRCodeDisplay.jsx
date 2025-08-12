@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Download, Share2, ExternalLink } from "lucide-react"
 import QRCodeLib from "qrcode"
-import { useQRBidContract } from "../../hooks/useQRBidContract"
+import { useQRBidContract } from "@/hooks/useQRBidContract"
 
 
 export default function QRCodeDisplay() {

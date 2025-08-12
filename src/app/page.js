@@ -1,19 +1,18 @@
-// app/page.js
-import Link from "next/link"
+import HeroSection from "@/components/landing/HeroSection"
+import FeaturesGrid from "@/components/landing/FeaturesGrid"
+import Footer from "@/components/auction/layout/Footer"
+import Background from "@/components/landing/Background"
+import Header from "@/components/landing/Header"
 
 export default function LandingPage() {
     return (
-        <div>
-            {/* Your landing page content */}
-            <main>
-                <h1>Welcome to QR Auction</h1>
-                <p>Bid to control where the QR code points!</p>
-
-                {/* Call to action to go to auction */}
-                <Link href="/auction">
-                    <button>Enter Auction</button>
-                </Link>
-            </main>
-        </div>
+        <Background>
+            <div className="min-h-screen flex flex-col">
+                <Header />
+                <HeroSection />
+                <FeaturesGrid />
+                <Footer />
+            </div>
+        </Background>
     )
 }

@@ -1,14 +1,14 @@
-import QRBidBackground from "@/components/auction/layout/QRBidBackground"
+import Background from "@/components/landing/Background"
 import Header from "@/components/landing/Header"
 import AuctionDisplay from "@/components/auction/auctionPanel/AuctionDisplay"
 import QRCodeDisplay from "@/components/auction/qr/QRCodeDisplay"
 import WinnerPreview from "@/components/auction/winner/WinnerPreview"
 import AdminPanel from "@/components/auction/admin/AdminPanel"
-import Footer from "@/components/auction/layout/Footer"
+import Footer from "@/components/Footer"
 
 export default function Auction() {
     return (
-        <QRBidBackground>
+        <Background>
             {/* Full height container with flex layout */}
             <div className="min-h-screen flex flex-col">
                 <Header currentPage="auction" />
@@ -39,6 +39,6 @@ export default function Auction() {
                 {/* Footer stays at bottom */}
                 <Footer />
             </div>
-        </QRBidBackground>
+        </Background>
     )
 }

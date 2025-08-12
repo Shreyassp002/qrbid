@@ -1,6 +1,6 @@
 import HeroSection from "@/components/landing/HeroSection"
 import FeaturesGrid from "@/components/landing/FeaturesGrid"
-import Footer from "@/components/auction/layout/Footer"
+import Footer from "@/components/Footer"
 import Background from "@/components/landing/Background"
 import Header from "@/components/landing/Header"
 

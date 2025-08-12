@@ -22,13 +22,8 @@ export default function Header({ currentPage = "home" }) {
 
     // Determine background based on page and scroll
     const getHeaderBackground = () => {
-        if (currentPage === "auction") {
-            // On auction page, always show background (enhanced when scrolled)
-            return scrolled ? "bg-black/40 backdrop-blur-md" : "bg-black/20 backdrop-blur-sm"
-        } else {
-            // On home page, show background only when scrolled
-            return scrolled ? "bg-black/30 backdrop-blur-md" : "bg-transparent"
-        }
+        // On home page, show background only when scrolled
+        return scrolled ? "bg-black/30 backdrop-blur-md" : "bg-transparent"
     }
 
     return (

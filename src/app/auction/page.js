@@ -1,5 +1,5 @@
 import Background from "@/components/landing/Background"
-import Header from "@/components/landing/Header"
+import Header from "@/components/Header"
 import AuctionDisplay from "@/components/auction/auctionPanel/AuctionDisplay"
 import QRCodeDisplay from "@/components/auction/qr/QRCodeDisplay"
 import WinnerPreview from "@/components/auction/winner/WinnerPreview"

@@ -1,3 +1,4 @@
+/* app/globals.css */
 @import "tailwindcss";
 
 :root {
@@ -8,7 +9,7 @@
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
-    --font-sans: var(--font-geist-sans);
+    --font-sans: var(--font-blanc-groove); /* Changed this line */
     --font-mono: var(--font-geist-mono);
 }
 
@@ -21,10 +22,10 @@
 
 body {
     color: var(--foreground);
-    font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+    font-family: var(--font-blanc-groove), Arial, Helvetica, sans-serif; /* Updated this line */
 }
 
-/* Custom component styles */
+/* Your existing custom component styles */
 .glass-card {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);

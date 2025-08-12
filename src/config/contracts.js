@@ -636,7 +636,6 @@ export const QR_BID_ABI = [
 
 export const CONTRACT_ADDRESSES = {
     sepolia: "0x9719755e51BA1A339E0139c2F0E7e919982e5A2D",
-    localhost: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
 }
 
 export const SUPPORTED_CHAINS = [

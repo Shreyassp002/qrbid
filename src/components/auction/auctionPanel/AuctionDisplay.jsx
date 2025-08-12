@@ -4,7 +4,7 @@ import { parseEther, formatEther } from "viem"
 
 import { ConnectButton } from "@rainbow-me/rainbowkit"
 import { useAccount } from "wagmi"
-import { useQRBidContract } from "../../hooks/useQRBidContract"
+import { useQRBidContract } from "@/hooks/useQRBidContract"
 
 export default function AuctionDisplay() {
     const { isConnected, address } = useAccount()

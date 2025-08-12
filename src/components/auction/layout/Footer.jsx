@@ -20,7 +20,7 @@ export default function Footer() {
     ]
 
     return (
-        <footer className="relative border-t border-gray-700/50 bg-gray-900/80 backdrop-blur-sm mt-auto">
+        <footer className="relative border-t border-gray-700/30 bg-black/30 backdrop-blur-md mt-auto">
             {/* Gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-r from-blue-900/10 via-purple-900/10 to-pink-900/10 pointer-events-none"></div>
 

@@ -2,7 +2,7 @@
 import { useState } from "react"
 import { ExternalLink, Trophy, Eye, EyeOff } from "lucide-react"
 import { formatEther } from "viem"
-import { useQRBidContract } from "../../hooks/useQRBidContract"
+import { useQRBidContract } from "../../../hooks/useQRBidContract"
 import SafeIframe from "../qr/SafeIframe"
 
 export default function WinnerPreview() {

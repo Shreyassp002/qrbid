@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react"
 import { useAccount } from "wagmi"
 import { formatEther } from "viem"
-import { useQRBidContract } from "../../hooks/useQRBidContract"
+import { useQRBidContract } from "@/hooks/useQRBidContract"
 
 export default function AdminPanel() {
     const { isConnected, address } = useAccount()

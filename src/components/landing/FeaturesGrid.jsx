@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 export default function FeaturesGrid() {
     const features = [
         {
@@ -165,9 +167,11 @@ export default function FeaturesGrid() {
                     <p className="text-gray-300 mb-6">
                         Ready to experience the future of digital auctions?
                     </p>
-                    <button className="bg-gradient-to-r from-blue-400 to-purple-400 hover:from-blue-500 hover:to-purple-500 text-white px-8 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/25">
-                        Get Started Today
-                    </button>
+                    <Link href="/auction">
+                        <button className="bg-gradient-to-r from-blue-400 to-purple-400 hover:from-blue-500 hover:to-purple-500 text-white px-8 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/25">
+                            Get Started Today
+                        </button>
+                    </Link>
                 </div>
             </div>
         </section>

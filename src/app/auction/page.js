@@ -54,68 +54,66 @@ export default function Auction() {
     return (
         <Background>
             <Suspense fallback={<AuctionLoadingFallback />}>
-                <PageTransition>
-                    <div className="min-h-screen flex flex-col">
-                        <Header currentPage="auction" />
+                <div className="min-h-screen flex flex-col">
+                    <Header currentPage="auction" />
 
-                        <main className="flex-1 p-8 pt-24">
-                            <PageTransition delay={150}>
-                                <div className="text-center mb-12">
-                                    <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-                                        Bid to control where the QR code points!
-                                    </p>
-                                </div>
-                            </PageTransition>
-
-                            <PageTransition delay={250}>
-                                <div className="max-w-6xl mx-auto mb-8">
-                                    <Suspense
-                                        fallback={
-                                            <div className="h-20 bg-gray-800/50 rounded-2xl animate-pulse"></div>
-                                        }
-                                    >
-                                        <AdminPanel />
-                                    </Suspense>
-                                </div>
-                            </PageTransition>
-
-                            <PageTransition delay={350}>
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto mb-8">
-                                    <Suspense
-                                        fallback={
-                                            <div className="h-80 bg-gray-800/50 rounded-2xl animate-pulse"></div>
-                                        }
-                                    >
-                                        <QRCodeDisplay />
-                                    </Suspense>
-                                    <Suspense
-                                        fallback={
-                                            <div className="h-80 bg-gray-800/50 rounded-2xl animate-pulse"></div>
-                                        }
-                                    >
-                                        <AuctionDisplay />
-                                    </Suspense>
-                                </div>
-                            </PageTransition>
-
-                            <PageTransition delay={450}>
-                                <div className="max-w-6xl mx-auto">
-                                    <Suspense
-                                        fallback={
-                                            <div className="h-32 bg-gray-800/50 rounded-2xl animate-pulse"></div>
-                                        }
-                                    >
-                                        <WinnerPreview />
-                                    </Suspense>
-                                </div>
-                            </PageTransition>
-                        </main>
-
-                        <PageTransition delay={550}>
-                            <Footer />
+                    <main className="flex-1 p-8 pt-24">
+                        <PageTransition delay={150}>
+                            <div className="text-center mb-12">
+                                <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+                                    Bid to control where the QR code points!
+                                </p>
+                            </div>
                         </PageTransition>
-                    </div>
-                </PageTransition>
+
+                        <PageTransition delay={250}>
+                            <div className="max-w-6xl mx-auto mb-8">
+                                <Suspense
+                                    fallback={
+                                        <div className="h-20 bg-gray-800/50 rounded-2xl animate-pulse"></div>
+                                    }
+                                >
+                                    <AdminPanel />
+                                </Suspense>
+                            </div>
+                        </PageTransition>
+
+                        <PageTransition delay={350}>
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto mb-8">
+                                <Suspense
+                                    fallback={
+                                        <div className="h-80 bg-gray-800/50 rounded-2xl animate-pulse"></div>
+                                    }
+                                >
+                                    <QRCodeDisplay />
+                                </Suspense>
+                                <Suspense
+                                    fallback={
+                                        <div className="h-80 bg-gray-800/50 rounded-2xl animate-pulse"></div>
+                                    }
+                                >
+                                    <AuctionDisplay />
+                                </Suspense>
+                            </div>
+                        </PageTransition>
+
+                        <PageTransition delay={450}>
+                            <div className="max-w-6xl mx-auto">
+                                <Suspense
+                                    fallback={
+                                        <div className="h-32 bg-gray-800/50 rounded-2xl animate-pulse"></div>
+                                    }
+                                >
+                                    <WinnerPreview />
+                                </Suspense>
+                            </div>
+                        </PageTransition>
+                    </main>
+
+                    <PageTransition delay={550}>
+                        <Footer />
+                    </PageTransition>
+                </div>
             </Suspense>
         </Background>
     )

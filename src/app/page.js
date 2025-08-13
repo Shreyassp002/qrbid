@@ -37,20 +37,18 @@ export default function LandingPage() {
     return (
         <Background>
             <Suspense fallback={<LoadingFallback />}>
-                <PageTransition>
-                    <div className="min-h-screen flex flex-col">
-                        <Header currentPage="home" />
-                        <PageTransition delay={150}>
-                            <HeroSection />
-                        </PageTransition>
-                        <PageTransition delay={300}>
-                            <FeaturesGrid />
-                        </PageTransition>
-                        <PageTransition delay={450}>
-                            <Footer />
-                        </PageTransition>
-                    </div>
-                </PageTransition>
+                <div className="min-h-screen flex flex-col">
+                    <Header currentPage="home" />
+                    <PageTransition delay={150}>
+                        <HeroSection />
+                    </PageTransition>
+                    <PageTransition delay={300}>
+                        <FeaturesGrid />
+                    </PageTransition>
+                    <PageTransition delay={450}>
+                        <Footer />
+                    </PageTransition>
+                </div>
             </Suspense>
         </Background>
     )

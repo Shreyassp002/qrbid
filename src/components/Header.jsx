@@ -12,7 +12,8 @@ export default function Header({ currentPage = "home" }) {
         setMounted(true)
 
         const handleScroll = () => {
-            const isScrolled = window.scrollY > 50
+            // Account for crypto ticker height (48px) when determining scroll state
+            const isScrolled = window.scrollY > 100
             setScrolled(isScrolled)
         }
 

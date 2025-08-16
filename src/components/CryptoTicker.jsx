@@ -1,5 +1,3 @@
-// src/components/CryptoTicker.jsx
-
 "use client"
 
 import { useState, useEffect } from "react"
@@ -33,7 +31,7 @@ export default function CryptoTicker({ initialData = [] }) {
 
     // Update crypto data every 60 seconds
     useEffect(() => {
-        const interval = setInterval(fetchCryptoData, 60000) // 60 seconds
+        const interval = setInterval(fetchCryptoData, 6000000) // 
         return () => clearInterval(interval)
     }, [])
 
@@ -51,55 +49,77 @@ export default function CryptoTicker({ initialData = [] }) {
 
     // Format percentage change
     const formatChange = (change) => {
+        if (!change) return "0.00%"
         const formatted = Math.abs(change).toFixed(2)
         return change >= 0 ? `+${formatted}%` : `-${formatted}%`
     }
 
-    if (error) {
+    // If no data and error, show error
+    if (cryptoData.length === 0 && error) {
         return (
-            <div className="bg-red-50 border-l-4 border-red-400 p-4">
-                <p className="text-red-700 text-sm">{error}</p>
+            <div className="bg-red-900/50 text-white py-3 px-6">
+                <p className="text-red-200 text-sm text-center">{error}</p>
+            </div>
+        )
+    }
+
+    // If no data at all, show loading
+    if (cryptoData.length === 0) {
+        return (
+            <div className="bg-gray-900 text-white py-3">
+                <div className="flex items-center justify-center space-x-4">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <span className="text-sm text-gray-400">Loading crypto prices...</span>
+                </div>
             </div>
         )
     }
 
     return (
-        <div className="bg-gray-900 text-white py-3 overflow-hidden relative">
-            {/* Loading indicator */}
-            {isLoading && (
-                <div className="absolute top-1 right-4">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                </div>
-            )}
+        <div className="bg-transparent text-white py-3  relative">
+            {/* Container with max-width matching header */}
+            <div className="max-w-7xl mx-auto px-6 relative overflow-hidden">
+                {/* Loading indicator */}
+                {isLoading && (
+                    <div className="absolute top-1 right-0 z-10">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-400"></div>
+                    </div>
+                )}
 
-            {/* Scrolling ticker */}
-            <div className="relative">
-                <div className="animate-scroll flex items-center space-x-8 whitespace-nowrap">
-                    {/* Duplicate the data to create seamless loop */}
-                    {[...cryptoData, ...cryptoData].map((crypto, index) => (
-                        <div
-                            key={`${crypto.id}-${index}`}
-                            className="flex items-center space-x-2 min-w-max"
-                        >
-                            <span className="font-semibold text-sm">{crypto.symbol}</span>
-                            <span className="text-sm">${formatPrice(crypto.price)}</span>
-                            <span
-                                className={`text-xs px-1 py-0.5 rounded ${
-                                    crypto.change24h >= 0
-                                        ? "bg-green-600 text-green-100"
-                                        : "bg-red-600 text-red-100"
-                                }`}
+                {/* Left fade overlay */}
+                <div className="absolute left-6 top-0 w-12 h-full bg-gradient-to-r from-black to-transparent z-10 pointer-events-none"></div>
+
+                {/* Right fade overlay */}
+                <div className="absolute right-6 top-0 w-12 h-full bg-gradient-to-l from-black to-transparent z-10 pointer-events-none"></div>
+
+                {/* Scrolling ticker */}
+                <div className="relative overflow-hidden">
+                    <div className="animate-scroll flex items-center space-x-8 whitespace-nowrap pl-12 pr-20">
+                        {/* Duplicate the data to create seamless loop */}
+                        {[...cryptoData, ...cryptoData].map((crypto, index) => (
+                            <div
+                                key={`${crypto.id}-${index}`}
+                                className="flex items-center space-x-2 min-w-max"
                             >
-                                {formatChange(crypto.change24h)}
-                            </span>
-                        </div>
-                    ))}
+                                <span className="font-semibold text-sm text-blue-400">
+                                    {crypto.symbol}
+                                </span>
+                                <span className="text-sm text-white">
+                                    ${formatPrice(crypto.price)}
+                                </span>
+                                <span
+                                    className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                                        crypto.change24h >= 0
+                                            ? "bg-green-500/20 text-green-400"
+                                            : "bg-red-500/20 text-red-400"
+                                    }`}
+                                >
+                                    {formatChange(crypto.change24h)}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-            </div>
-
-            {/* Last updated info */}
-            <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                <span className="text-xs text-gray-400">Live • Updates every 60s</span>
             </div>
 
             <style jsx>{`

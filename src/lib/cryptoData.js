@@ -10,7 +10,7 @@ export async function getCryptoData() {
           'Accept': 'application/json',
         },
         // Cache for 30 seconds
-        next: { revalidate: 30 }
+        next: { revalidate: 300 }
       }
     );
 

@@ -31,7 +31,7 @@ export default function CryptoTicker({ initialData = [] }) {
 
     // Update crypto data every 60 seconds
     useEffect(() => {
-        const interval = setInterval(fetchCryptoData, 6000000) // 
+        const interval = setInterval(fetchCryptoData, 80000) //
         return () => clearInterval(interval)
     }, [])
 

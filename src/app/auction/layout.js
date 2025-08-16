@@ -15,13 +15,14 @@ export default async function AuctionLayout({ children }) {
                 <div className="min-h-screen flex flex-col">
                     <Header currentPage="auction" />
 
-                    {/* Crypto Ticker positioned right below header - stays fixed */}
-                    <div className="fixed top-[88px] left-0 right-0 z-40">
+                    {/* Add padding top to account for fixed header (Header height ~88px) */}
+                    <div className="pt-24">
+                        {/* Crypto Ticker - now in normal document flow */}
                         <CryptoTicker initialData={initialCryptoData} />
-                    </div>
 
-                    {/* Add top margin to account for fixed header + crypto ticker */}
-                    <div className="pt-36">{children}</div>
+                        {/* Children content */}
+                        {children}
+                    </div>
                 </div>
             </Background>
         </Web3Provider>
